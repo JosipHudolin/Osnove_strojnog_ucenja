@@ -4,16 +4,16 @@ import matplotlib.pyplot as plt
 img = plt.imread("road.jpg")
 
 #a)
-brightened_img = np.clip(img.astype(np.int32) + 50, 0, 255).astype(np.uint8)
-plt.imshow(img)
-plt.show()
-plt.imshow(brightened_img)
+lighterImg = img+150
+lighterImg[lighterImg < 150] = 255
+plt.imshow(lighterImg, cmap="gray")
+plt.title("Light cesta")
 plt.show()
 
 #b)
-height, width, unused = img.shape
-cropped_img = img[:, width // 4:width // 2, :]
-plt.imshow(cropped_img)
+quarterImg = img[:, int(img.shape[1]/4):int(img.shape[1]/2)]
+plt.imshow(quarterImg, cmap="gray")
+plt.title("Sliceana cesta")
 plt.show()
 
 #c)
@@ -22,6 +22,7 @@ plt.imshow(rotated_img)
 plt.show()
 
 #d)
-flipped_image = np.fliplr(img)
-plt.imshow(flipped_image)
+mirrorImg = np.flip(img, axis=1)
+plt.imshow(mirrorImg, cmap="gray")
+plt.title("Zrcaljena cesta")
 plt.show()
