@@ -1,68 +1,50 @@
 import pandas as pd
-
+import numpy as np
 data = pd.read_csv('data_C02_emission.csv')
 
-#A
-print("a)")
-print(data.shape)
-print("Postoji", data.isnull().sum().sum(), "redaka s izostavljenim podacima.")
-data.dropna()
-print("Postoji", data.duplicated().sum(), "redaka s ponovljenim podacima.")
-data.drop_duplicates()
-for col in ['Make', 'Model', 'Vehicle Class', 'Transmission', 'Fuel Type']:
-    data[col] = data[col].astype('category')
+#a
+print(len(data))
+print(data.info())
+print(data.dropna())
+print(data.drop_duplicates())
+data[data.select_dtypes(['object']).columns] = data.select_dtypes(['object']).apply(lambda x: x.astype('category')) #pretvaranje u category tip
+print(data.info())
 
-#B
-#Fuel Consumption City (L/100km)
-print("b)")
-highest_consumption = data.sort_values(by=['Fuel Consumption City (L/100km)'], ascending=False).head(3)
-lowest_consumption = data.sort_values(by=['Fuel Consumption City (L/100km)']).head(3)
+#b
+subdata = data[['Fuel Consumption City (L/100km)', 'Make', 'Model']]
 
-print("Highest Fuel Consumption City (L/100km)")
-print(highest_consumption[['Make', 'Model', 'Fuel Consumption City (L/100km)']])
-print("Lowest Fuel Consumption City (L/100km)")
-print(lowest_consumption[['Make', 'Model', 'Fuel Consumption City (L/100km)']])
+print(subdata.nsmallest(3, 'Fuel Consumption City (L/100km)'))
+print(subdata.nlargest(3, 'Fuel Consumption City (L/100km)'))
 
-#C
-print("c)")
-engine_size_interval = data[(data['Engine Size (L)'] > 2.5) & (data['Engine Size (L)'] < 3.5)]
-print("Broj ovih vozila je", engine_size_interval['Engine Size (L)'].count())
-print("Prosječna emisija CO2 je ", round(engine_size_interval['CO2 Emissions (g/km)'].mean(), 2), " g/km")
+#c
+csub = data[(data['Engine Size (L)'] > 2.5) & (data['Engine Size (L)'] < 3.5)]
+print(len(csub))
+print(csub['CO2 Emissions (g/km)'].mean())
 
-#D
-print("d)")
-audis = data[(data['Make'] == "Audi")]
-print("Postoji", audis.shape[0], "mjerenja za proizvođača Audi.")
-audis_4_cilinder = audis[(audis['Cylinders'] == 4)]
-print("Prosječna emisija CO2 iznosi", round(audis['CO2 Emissions (g/km)'].mean(), 2), "g/km")
+#d
+print(len(data[(data['Make'] == 'Audi')]))
+dsub = data[(data['Make'] == 'Audi') & (data['Cylinders'] == 4)]
+print(dsub['CO2 Emissions (g/km)'].mean())
 
-#E
-print("e)")
-grouped_by_cilinders_count = data.groupby("Cylinders").count()
-grouped_by_cilinders_mean = data.groupby("Cylinders").mean()
-print(grouped_by_cilinders_count["Make"])
-print(grouped_by_cilinders_mean["CO2 Emissions (g/km)"])
+#e
+print(len(data[(data['Cylinders'] % 2 == 0)]))
+print(data.groupby('Cylinders')['CO2 Emissions (g/km)'].mean())
 
-#F
-print("f)")
-using_diesel = data[(data['Fuel Type'] == 'D')]
-using_gasoline = data[(data['Fuel Type'] == 'X')]
-print("Prosječna potrošnja za dizelaše je", round(using_diesel["Fuel Consumption City (L/100km)"].mean(), 2), "L/100km")
-print("Prosječna potrošnja za benzince je", round(using_gasoline["Fuel Consumption City (L/100km)"].mean(), 2), "L/100km")
-print("Medijalna potrošnja za dizelaše je", round(using_diesel["Fuel Consumption City (L/100km)"].median(), 2), "L/100km")
-print("Medijalna potrošnja za benzince je", round(using_gasoline["Fuel Consumption City (L/100km)"].median(), 2), "L/100km")
+#f
+fsubD = data[(data['Fuel Type'] == 'D')]
+print(fsubD['Fuel Consumption City (L/100km)'].mean())
+fsubX = data[(data['Fuel Type'] == 'X')]
+print(fsubX['Fuel Consumption City (L/100km)'].mean())
+#medijalne vrijednosti
+print(fsubD['Fuel Consumption City (L/100km)'].median(),fsubX['Fuel Consumption City (L/100km)'].median())
 
-#G
-print("g)")
-all_with_condition = data[(data['Fuel Type'] == 'D') & (data['Cylinders'] == 4)]
-uses_most = all_with_condition.sort_values(by=['Fuel Consumption City (L/100km)'], ascending=False).head(1)
-print("Najveću gradsku potrošnju ima", uses_most['Make'].astype(str), uses_most['Model'].astype(str))
+#g
+print(data[(data['Cylinders'] == 4) & (data['Fuel Type'] == 'D')]
+      ['Fuel Consumption City (L/100km)'].max())
 
-#H
-print("h)")
-manual_transmission = data[(data["Transmission"].str.startswith('M'))]
-print("Postoji", manual_transmission.shape[0], "vozila s ručnim mjenjačem.")
+#h
+print(len(data[(data['Transmission'].str.startswith('M'))]))
 
-#I
-print("i)")
+#i
 print(data.corr(numeric_only=True))
+# na dijagonali su 1 jer su jednake vrijednosti - maksimalna korelacija
