@@ -1,12 +1,13 @@
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib . pyplot as plt
 
-black = np.zeros((50, 50), dtype=np.uint8)
-white = np.ones((50, 50), dtype=np.uint8)
+black = np.zeros((50,50))
+white = np.ones((50,50))*255
 
-top = np.hstack((black, white))
-bottom = np.hstack((white, black))
-final = np.vstack((top, bottom))
+col1 = np.vstack((black,white))
+col2 = np.vstack((white,black))
 
-plt.imshow(final, cmap="gray")
+img = np.hstack((col1,col2))
+
+plt.imshow(img, cmap ="gray")
 plt.show()
