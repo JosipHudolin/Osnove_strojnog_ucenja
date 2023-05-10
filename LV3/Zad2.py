@@ -1,33 +1,37 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import numpy as np
 data = pd.read_csv('data_C02_emission.csv')
 
-#A
-plt.hist(data["CO2 Emissions (g/km)"],bins=50, color='steelblue', edgecolor='gray')
-plt.xlabel("Interval of CO2 emissions (g/km)")
-plt.ylabel("Number of cars in category")
-plt.show()
+#a
+plt.figure ()
+data ['CO2 Emissions (g/km)']. plot ( kind ='hist', bins = 20 )
 
-#B
-colors = { 'X': 'blue', 'Z': 'green', 'D': 'red', 'E': 'orange', 'N': 'black' }
-data.plot.scatter(x='Fuel Consumption City (L/100km)',
-                    y='CO2 Emissions (g/km)',
-                    c=data['Fuel Type'].apply(lambda x: colors[x]), s=10)
-plt.show()
+# b)
+plt.figure()
+colors=["r","b","g","k","y"]
+gas=['X','Z','D','E','N']
 
-#C
-grouped_fuel_type = data.groupby('Fuel Type')
-grouped_fuel_type.boxplot(column=['Fuel Consumption Hwy (L/100km)'])
-plt.show()
+for i in range(0,5):
+     data1=data[data['Fuel Type']==gas[i]]
+     x=np.array(data1['Fuel Consumption City (L/100km)'])
+     y=np.array(data1['CO2 Emissions (g/km)'])
+     plt.scatter(x,y, c=colors[i], s=2 )
 
-#D
-grouped_fuel_type['Make'].count().plot(kind="bar")
-plt.ylabel("No. of cars with fuel type")
-plt.show()
 
-#E
-grouped_cylinders = data.groupby("Cylinders").mean()
-grouped_cylinders["CO2 Emissions (g/km)"].plot(kind="bar")
-plt.ylabel("Average CO2 Emissions (g/km)")
+# c)
+cityConsumption = data.groupby(['Fuel Type'])
+cityConsumption.boxplot(column=['Fuel Consumption Hwy (L/100km)'])
+
+# d)
+
+plt.figure()
+fuel=data.groupby(['Fuel Type']).size()
+fuel.plot(kind='bar')
+
+#e
+plt.figure()
+emission=data.groupby(['Cylinders']).agg({'CO2 Emissions (g/km)':'mean'})
+emission.plot(kind='bar')
+print(emission)
 plt.show()
