@@ -1,0 +1,57 @@
+NUMPY POLJA:
+
+print(a[1:5:2, 1:-2:1])     prije zareza se piše za retke, iza za stupce, prvi broj je početak, drugi završetak, a treći korak. Ako je minus iza prve : onda on označava koliko zadnjih 					    elemenata nije uključeno, a ako je iza druge : onda označava korake unatrag
+
+a.min() vraća najmanji element arraya
+a.argmin() vraća index najmanjeg elementa arraya
+isto tako i za max
+a.mean() ili np.mean(a) je prosjek
+
+PANDAS:
+
+# provjera koliko je izostalih vrijednosti po svakom stupcu DataFramea
+print(data.isnull().sum())
+
+# brisanje redova gdje barem vrijednost jedne velicine nedostaje
+data.dropna(axis=0)
+
+# brisanje stupaca gdje barem jedna vrijednost nedostaje
+data.dropna(axis=1)
+
+# brisanje dupliciranih redova
+data.drop_duplicates()
+
+# kada se obrisu pojedini redovi potrebno je resetirati indekse retka
+data = data.reset_index(drop = True)
+
+grouped = data.groupby(’Cylinders’)
+grouped.boxplot(column =[’CO2 Emissions (g/km)’])
+              ==                                                 crtanje kutijastog dijagrama grupiranih podataka
+data.boxplot(column =[’CO2 Emissions (g/km)’], by=’Cylinders ’)
+plt.show()
+
+print(data.corr(numeric_only = True))  izračun korelacije
+
+data[data.select_dtypes(['object']).columns] = data.select_dtypes(['object']).apply(lambda x: x.astype('category')) #pretvaranje u category tip
+
+LINEARNI MODELI:
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state=1)    podjela podataka na test i train skup
+
+# min - max skaliranje
+sc = MinMaxScaler ()
+X_train_n = sc.fit_transform(X_train)
+X_test_n = sc.transform(X_test)
+
+ohe = OneHotEncoder ()
+X_encoded = ohe.fit_transform(data[[’Fuel Type ’]]).toarray()  kodiranje nominalnih veličina, kad imaš slova
+
+linearModel = lm.LinearRegression()
+linearModel.fit(X_train_n, y_train)
+
+# predikcija izlazne velicine na skupu podataka za testiranje
+y_test_p = linearModel.predict(X_test_n)
+
+# evaluacija modela na skupu podataka za testiranje pomocu MAE
+MAE = mean_absolute_error(y_test, y_test_p)
+
