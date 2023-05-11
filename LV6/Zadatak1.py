@@ -142,12 +142,15 @@ print(knn_gscv.best_score_)
 
 # 3. zadatak
 SVM_model = svm.SVC(kernel ='rbf', gamma = 1, C=0.1)
-SVM_model.fit(X_train_n , y_train)
-y_train_p_SVM = SVM_model.predict(X_train_n)
-y_test_p_SVM = SVM_model.predict(X_test_n)
+SVM_model.fit(X_train_n, y_train)
+
+y_train_p_SVM = SVM_model.predict ( X_train_n )
+y_test_p_SVM = SVM_model.predict ( X_test_n )
+
 print("SVM: ")
 print("Tocnost train: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p_SVM))))
 print("Tocnost test: " + "{:0.3f}".format((accuracy_score(y_test, y_test_p_SVM))))
+
 plot_decision_regions(X_train_n, y_train_p_SVM, classifier=SVM_model)
 plt.xlabel('x_1')
 plt.ylabel('x_2')
@@ -155,8 +158,11 @@ plt.legend(loc='upper left')
 plt.title("Tocnost: " + "{:0.3f}".format((accuracy_score(y_train, y_train_p_SVM))))
 plt.tight_layout()
 plt.show()
+
+
+#4.zadatak
 param_grid = {'C': [10 , 100 , 100 ], 'gamma': [10 , 1, 0.1, 0.01 ]}
-svm_gscv = GridSearchCV(SVM_model , param_grid , cv =5, scoring ='accuracy', n_jobs =-1)
-svm_gscv.fit(X_train, y_train)
-print (svm_gscv.best_params_)
-print (svm_gscv.best_score_)
+svm_gscv = GridSearchCV (SVM_model , param_grid , cv =5, scoring ='accuracy',n_jobs =-1)
+svm_gscv.fit (X_train , y_train)
+print ( svm_gscv . best_params_ )
+print ( svm_gscv . best_score_ )
